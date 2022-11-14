@@ -26,26 +26,36 @@ class QuizActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
 
-        val question: Int = mQuestionBank[mCurrentIndex].textResId
-        mQuestionTextView.setText(question)
+        updateQuestion()
 
         mTrueButton.setOnClickListener {
-            Toast.makeText(this, R.string.correct_toast, Toast.LENGTH_SHORT).show()
+            checkAnswer(true)
         }
 
         mFalseButton.setOnClickListener {
-            Toast.makeText(this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show()
+            checkAnswer(false)
         }
 
         mNextButton.setOnClickListener {
             mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.size
-            val question = mQuestionBank[mCurrentIndex].textResId
-            mQuestionTextView.setText(question)
+            updateQuestion()
         }
     }
 
     private fun updateQuestion() {
         val question = mQuestionBank[mCurrentIndex].textResId
         mQuestionTextView.setText(question)
+    }
+
+    private fun checkAnswer(userPressedTrue: Boolean) {
+        val isAnswerTrue = mQuestionBank[mCurrentIndex].isAnswerTrue
+        var messageResId = -1
+
+        if (userPressedTrue == isAnswerTrue) {
+            messageResId = R.string.correct_toast
+        } else {
+            messageResId = R.string.incorrect_toast
+        }
+        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
     }
 }
