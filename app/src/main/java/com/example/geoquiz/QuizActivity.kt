@@ -65,6 +65,7 @@ class QuizActivity : AppCompatActivity() {
                     "Your points is:${questionsPoints}/${mQuestionBank.size}",
                     Toast.LENGTH_LONG
                 ).show()
+                questionsPoints = 0
             }
             updateQuestion()
             mTrueButton.isVisible = true
