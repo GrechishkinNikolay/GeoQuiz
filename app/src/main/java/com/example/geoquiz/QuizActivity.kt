@@ -2,19 +2,22 @@ package com.example.geoquiz
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 
 class QuizActivity : AppCompatActivity() {
 
     private val TAG = "QuizActivity345"
     private val KEY_INDEX = "questionCurrentIndex"
+    private val KEY_POINTS = "questionsPoints"
 
     private val mQuestionTextView: TextView by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.question_text_view) }
-    private val mTrueButton: TextView by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.true_button) }
-    private val mFalseButton: TextView by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.false_button) }
+    private val mTrueButton: Button by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.true_button) }
+    private val mFalseButton: Button by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.false_button) }
     private val mNextButton: ImageButton by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.next_button) }
     private val mPrevButton: ImageButton by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.previous_button) }
 
@@ -27,10 +30,12 @@ class QuizActivity : AppCompatActivity() {
         Question(R.string.question_asia, true)
     )
     private var mCurrentIndex = 0
+    private var questionsPoints = 0
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         Log.i(TAG, "onSaveInstanceState")
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex)
+        savedInstanceState.putInt(KEY_POINTS, questionsPoints)
         super.onSaveInstanceState(savedInstanceState)
     }
 
@@ -38,6 +43,7 @@ class QuizActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
 
+        questionsPoints = savedInstanceState?.getInt(KEY_POINTS) ?: 0
         mCurrentIndex = savedInstanceState?.getInt(KEY_INDEX) ?: 0
 
         Log.d(TAG, "onCreate(savedInstanceState: Bundle?")
@@ -53,7 +59,16 @@ class QuizActivity : AppCompatActivity() {
 
         mNextButton.setOnClickListener {
             mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.size
+            if (mCurrentIndex == 0) {
+                Toast.makeText(
+                    this,
+                    "Your points is:${questionsPoints}/${mQuestionBank.size}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
             updateQuestion()
+            mTrueButton.isVisible = true
+            mFalseButton.isVisible = true
         }
 
         mPrevButton.setOnClickListener {
@@ -68,7 +83,7 @@ class QuizActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
+/*    override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart() called")
     }
@@ -91,7 +106,7 @@ class QuizActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onDestroy() called")
-    }
+    }*/
 
     private fun updateQuestion() {
         val question = mQuestionBank[mCurrentIndex].textResId
@@ -102,8 +117,12 @@ class QuizActivity : AppCompatActivity() {
         val isAnswerTrue = mQuestionBank[mCurrentIndex].isAnswerTrue
         var messageResId = -1
 
+        mTrueButton.isVisible = false
+        mFalseButton.isVisible = false
+
         if (userPressedTrue == isAnswerTrue) {
             messageResId = R.string.correct_toast
+            questionsPoints++
         } else {
             messageResId = R.string.incorrect_toast
         }
