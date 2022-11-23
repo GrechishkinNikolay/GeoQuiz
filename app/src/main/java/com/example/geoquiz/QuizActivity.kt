@@ -14,10 +14,12 @@ class QuizActivity : AppCompatActivity() {
     private val TAG = "QuizActivity345"
     private val KEY_INDEX = "questionCurrentIndex"
     private val KEY_POINTS = "questionsPoints"
+    private val REQUEST_CODE_CHEAT = 0
 
     private val mQuestionTextView: TextView by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.question_text_view) }
     private val mTrueButton: Button by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.true_button) }
     private val mFalseButton: Button by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.false_button) }
+    private val mCheatButton: Button by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.cheat_button) }
     private val mNextButton: ImageButton by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.next_button) }
     private val mPrevButton: ImageButton by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.previous_button) }
 
@@ -48,6 +50,13 @@ class QuizActivity : AppCompatActivity() {
 
         Log.d(TAG, "onCreate(savedInstanceState: Bundle?")
         updateQuestion()
+
+        mCheatButton.setOnClickListener {
+//            val intent = Intent(this, CheatActivity::class.java)
+            val answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue
+            val intent = CheatActivity.newIntent(this@QuizActivity, answerIsTrue)
+            startActivity(intent)
+        }
 
         mTrueButton.setOnClickListener {
             checkAnswer(true)
@@ -84,7 +93,7 @@ class QuizActivity : AppCompatActivity() {
         }
     }
 
-/*    override fun onStart() {
+    /*    override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart() called")
     }
