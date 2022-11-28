@@ -17,14 +17,24 @@ class CheatActivity : AppCompatActivity() {
 
 
     companion object {
-
-        private val EXTRA_ANSWER_IS_TRUE = "com.bignerdranch.android.geoquiz.answer_is_true"
+        private const val EXTRA_ANSWER_SHOWN = "com.bignerdranch.android.geoquiz.answer_shown"
+        private const val EXTRA_ANSWER_IS_TRUE = "com.bignerdranch.android.geoquiz.answer_is_true"
 
         fun newIntent(packageContext: Context, answerIsTrue: Boolean): Intent {
             val intent = Intent(packageContext, CheatActivity::class.java)
             intent.putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue)
             return intent
         }
+
+        fun wasAnswerShown(result: Intent): Boolean {
+            return result.getBooleanExtra(EXTRA_ANSWER_SHOWN, false)
+        }
+    }
+
+    private fun setAnswerShownResult(isAnswerShown: Boolean) {
+        val intent = Intent()
+        intent.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown)
+        setResult(RESULT_OK, intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +49,7 @@ class CheatActivity : AppCompatActivity() {
             } else {
                 mAnswerTextView.setText(R.string.false_button);
             }
+            setAnswerShownResult(true)
         }
 
     }

@@ -1,5 +1,6 @@
 package com.example.geoquiz
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -9,12 +10,23 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 
+
 class QuizActivity : AppCompatActivity() {
 
-    private val TAG = "QuizActivity345"
-    private val KEY_INDEX = "questionCurrentIndex"
-    private val KEY_POINTS = "questionsPoints"
-    private val REQUEST_CODE_CHEAT = 0
+    private companion object {
+        private const val TAG = "QuizActivity345"
+        private const val KEY_INDEX = "questionCurrentIndex"
+        private const val KEY_POINTS = "questionsPoints"
+        private const val REQUEST_CODE_CHEAT = 0
+        private val mQuestionBank = arrayOf(
+            Question(R.string.question_australia, true),
+            Question(R.string.question_oceans, true),
+            Question(R.string.question_mideast, false),
+            Question(R.string.question_africa, false),
+            Question(R.string.question_americas, true),
+            Question(R.string.question_asia, true)
+        )
+    }
 
     private val mQuestionTextView: TextView by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.question_text_view) }
     private val mTrueButton: Button by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.true_button) }
@@ -23,16 +35,9 @@ class QuizActivity : AppCompatActivity() {
     private val mNextButton: ImageButton by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.next_button) }
     private val mPrevButton: ImageButton by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.previous_button) }
 
-    private val mQuestionBank = arrayOf(
-        Question(R.string.question_australia, true),
-        Question(R.string.question_oceans, true),
-        Question(R.string.question_mideast, false),
-        Question(R.string.question_africa, false),
-        Question(R.string.question_americas, true),
-        Question(R.string.question_asia, true)
-    )
     private var mCurrentIndex = 0
     private var questionsPoints = 0
+    private var mIsCheater = false
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         Log.i(TAG, "onSaveInstanceState")
@@ -52,10 +57,9 @@ class QuizActivity : AppCompatActivity() {
         updateQuestion()
 
         mCheatButton.setOnClickListener {
-//            val intent = Intent(this, CheatActivity::class.java)
             val answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue
             val intent = CheatActivity.newIntent(this@QuizActivity, answerIsTrue)
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_CODE_CHEAT)
         }
 
         mTrueButton.setOnClickListener {
@@ -77,6 +81,7 @@ class QuizActivity : AppCompatActivity() {
                 questionsPoints = 0
             }
             updateQuestion()
+            mIsCheater = false
             mTrueButton.isVisible = true
             mFalseButton.isVisible = true
         }
@@ -90,6 +95,19 @@ class QuizActivity : AppCompatActivity() {
         mQuestionTextView.setOnClickListener {
             mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.size
             updateQuestion()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != RESULT_OK) {
+            return
+        }
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (data == null) {
+                return
+            }
+            mIsCheater = CheatActivity.wasAnswerShown(data)
         }
     }
 
@@ -130,11 +148,15 @@ class QuizActivity : AppCompatActivity() {
         mTrueButton.isVisible = false
         mFalseButton.isVisible = false
 
-        if (userPressedTrue == isAnswerTrue) {
-            messageResId = R.string.correct_toast
-            questionsPoints++
+        if (mIsCheater) {
+            messageResId = R.string.judgment_toast;
         } else {
-            messageResId = R.string.incorrect_toast
+            if (userPressedTrue == isAnswerTrue) {
+                messageResId = R.string.correct_toast
+                questionsPoints++
+            } else {
+                messageResId = R.string.incorrect_toast
+            }
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
     }
