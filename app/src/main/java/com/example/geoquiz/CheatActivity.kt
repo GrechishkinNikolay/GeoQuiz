@@ -10,13 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 
 class CheatActivity : AppCompatActivity() {
 
-    private var answerIsTrue = false
-
-    private val mShowAnswerButton: Button by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.show_answer_button) }
-    private val mAnswerTextView: TextView by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.answer_text_view) }
-
-
     companion object {
+        private const val KEY_ANSWER_IS_TRUE =
+            "com.bignerdranch.android.geoquiz.code_answer_is_true"
         private const val EXTRA_ANSWER_SHOWN = "com.bignerdranch.android.geoquiz.answer_shown"
         private const val EXTRA_ANSWER_IS_TRUE = "com.bignerdranch.android.geoquiz.answer_is_true"
 
@@ -31,26 +27,37 @@ class CheatActivity : AppCompatActivity() {
         }
     }
 
-    private fun setAnswerShownResult(isAnswerShown: Boolean) {
-        val intent = Intent()
-        intent.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown)
-        setResult(RESULT_OK, intent)
+    private var answerIsTrue = false
+    private var answerIsShown = false
+
+    private val mShowAnswerButton: Button by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.show_answer_button) }
+    private val mAnswerTextView: TextView by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.answer_text_view) }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(KEY_ANSWER_IS_TRUE, answerIsTrue)
+        outState.putBoolean(EXTRA_ANSWER_SHOWN, answerIsShown)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cheat)
 
+        answerIsShown = savedInstanceState?.getBoolean(EXTRA_ANSWER_SHOWN) ?: false
+        setAnswerShownResult()
         answerIsTrue = intent.getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false)
 
         mShowAnswerButton.setOnClickListener {
-            if (answerIsTrue) {
-                mAnswerTextView.setText(R.string.true_button);
-            } else {
-                mAnswerTextView.setText(R.string.false_button);
-            }
-            setAnswerShownResult(true)
+            mAnswerTextView.setText(if (answerIsTrue) R.string.true_button else R.string.false_button)
+            answerIsShown = true
+            setAnswerShownResult()
         }
 
+    }
+
+    private fun setAnswerShownResult() {
+//        val intent = Intent()
+        intent.putExtra(EXTRA_ANSWER_SHOWN, answerIsShown)
+        setResult(RESULT_OK, intent)
     }
 }

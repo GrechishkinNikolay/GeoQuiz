@@ -17,14 +17,17 @@ class QuizActivity : AppCompatActivity() {
         private const val TAG = "QuizActivity345"
         private const val KEY_INDEX = "questionCurrentIndex"
         private const val KEY_POINTS = "questionsPoints"
+        private const val KEY_ANSWER_IS_SHOWN = "answerIsShown"
         private const val REQUEST_CODE_CHEAT = 0
         private val mQuestionBank = arrayOf(
-            Question(R.string.question_australia, true),
-            Question(R.string.question_oceans, true),
-            Question(R.string.question_mideast, false),
-            Question(R.string.question_africa, false),
-            Question(R.string.question_americas, true),
-            Question(R.string.question_asia, true)
+//            Question(R.string.question_australia, true),
+//            Question(R.string.question_oceans, true),
+//            Question(R.string.question_mideast, false),
+//            Question(R.string.question_africa, false),
+//            Question(R.string.question_americas, true),
+            Question(R.string.question_asia, true),
+            Question(R.string.question_uk, true),
+            Question(R.string.question_russia, true)
         )
     }
 
@@ -43,6 +46,7 @@ class QuizActivity : AppCompatActivity() {
         Log.i(TAG, "onSaveInstanceState")
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex)
         savedInstanceState.putInt(KEY_POINTS, questionsPoints)
+        savedInstanceState.putBoolean(KEY_ANSWER_IS_SHOWN, mIsCheater)
         super.onSaveInstanceState(savedInstanceState)
     }
 
@@ -50,8 +54,11 @@ class QuizActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
 
-        questionsPoints = savedInstanceState?.getInt(KEY_POINTS) ?: 0
-        mCurrentIndex = savedInstanceState?.getInt(KEY_INDEX) ?: 0
+        savedInstanceState?.let {
+            questionsPoints = savedInstanceState.getInt(KEY_POINTS)
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX)
+            mIsCheater = savedInstanceState.getBoolean(KEY_ANSWER_IS_SHOWN)
+        }
 
         Log.d(TAG, "onCreate(savedInstanceState: Bundle?")
         updateQuestion()
@@ -98,6 +105,7 @@ class QuizActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != RESULT_OK) {

@@ -10,6 +10,8 @@
     <string name="question_africa">The source of the Nile River is in Egypt.</string>
     <string name="question_americas">The Amazon River is the longest river in the Americas.</string>
     <string name="question_asia">Lake Baikal is the world\’s oldest and deepest freshwater lake.</string>
+    <string name="question_uk">Four countries are there in the United Kingdom.</string>
+    <string name="question_russia">There are 11 time zones in Russia.</string>
     <string name="prev_button">previous button</string>
     <string name="next_button">next button</string>
     <string name="warning_text">Are you sure you want to do this?</string>
