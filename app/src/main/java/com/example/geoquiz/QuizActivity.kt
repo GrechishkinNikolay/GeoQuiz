@@ -18,6 +18,7 @@ class QuizActivity : AppCompatActivity() {
         private const val KEY_INDEX = "questionCurrentIndex"
         private const val KEY_POINTS = "questionsPoints"
         private const val KEY_ANSWER_IS_SHOWN = "answerIsShown"
+        private const val KEY_FLAGS_ARRAY_SHOWED_QUESTION = "flagsArrayShowedQuestions"
         private const val REQUEST_CODE_CHEAT = 0
         private val mQuestionBank = arrayOf(
 //            Question(R.string.question_australia, true),
@@ -41,12 +42,17 @@ class QuizActivity : AppCompatActivity() {
     private var mCurrentIndex = 0
     private var questionsPoints = 0
     private var mIsCheater = false
+    private var flagsArrayShowedQuestions = BooleanArray(mQuestionBank.size)
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         Log.i(TAG, "onSaveInstanceState")
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex)
         savedInstanceState.putInt(KEY_POINTS, questionsPoints)
         savedInstanceState.putBoolean(KEY_ANSWER_IS_SHOWN, mIsCheater)
+        savedInstanceState.putBooleanArray(
+            KEY_FLAGS_ARRAY_SHOWED_QUESTION,
+            flagsArrayShowedQuestions
+        )
         super.onSaveInstanceState(savedInstanceState)
     }
 
@@ -58,13 +64,14 @@ class QuizActivity : AppCompatActivity() {
             questionsPoints = savedInstanceState.getInt(KEY_POINTS)
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX)
             mIsCheater = savedInstanceState.getBoolean(KEY_ANSWER_IS_SHOWN)
+            flagsArrayShowedQuestions =
+                savedInstanceState.getBooleanArray(KEY_FLAGS_ARRAY_SHOWED_QUESTION)!!
         }
 
-        Log.d(TAG, "onCreate(savedInstanceState: Bundle?")
         updateQuestion()
 
         mCheatButton.setOnClickListener {
-            val answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue
+            val answerIsTrue = mQuestionBank[mCurrentIndex].answerTrue
             val intent = CheatActivity.newIntent(this@QuizActivity, answerIsTrue)
             startActivityForResult(intent, REQUEST_CODE_CHEAT)
         }
@@ -89,18 +96,18 @@ class QuizActivity : AppCompatActivity() {
             }
             updateQuestion()
             mIsCheater = false
-            mTrueButton.isVisible = true
-            mFalseButton.isVisible = true
+            if (flagsArrayShowedQuestions[mCurrentIndex]) {
+                mTrueButton.isVisible = false
+                mFalseButton.isVisible = false
+            } else {
+                mTrueButton.isVisible = true
+                mFalseButton.isVisible = true
+            }
         }
 
         mPrevButton.setOnClickListener {
             mCurrentIndex =
                 if ((mCurrentIndex - 1) >= 0) (mCurrentIndex - 1) % mQuestionBank.size else mQuestionBank.size - 1
-            updateQuestion()
-        }
-
-        mQuestionTextView.setOnClickListener {
-            mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.size
             updateQuestion()
         }
     }
@@ -116,6 +123,7 @@ class QuizActivity : AppCompatActivity() {
                 return
             }
             mIsCheater = CheatActivity.wasAnswerShown(data)
+            flagsArrayShowedQuestions[mCurrentIndex] = mIsCheater
         }
     }
 
@@ -145,12 +153,12 @@ class QuizActivity : AppCompatActivity() {
     }*/
 
     private fun updateQuestion() {
-        val question = mQuestionBank[mCurrentIndex].textResId
-        mQuestionTextView.setText(question)
+        val question = mQuestionBank[mCurrentIndex]
+        mQuestionTextView.setText(if (flagsArrayShowedQuestions[mCurrentIndex]) R.string.judgment_text else question.textResId)
     }
 
     private fun checkAnswer(userPressedTrue: Boolean) {
-        val isAnswerTrue = mQuestionBank[mCurrentIndex].isAnswerTrue
+        val isAnswerTrue = mQuestionBank[mCurrentIndex].answerTrue
         var messageResId = -1
 
         mTrueButton.isVisible = false
