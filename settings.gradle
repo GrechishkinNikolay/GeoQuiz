@@ -13,4 +13,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "GeoQuiz"
-include ':app'
+include ':GeoQuiz'
+include ':criminalintent'
