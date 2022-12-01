@@ -25,4 +25,16 @@
         android:layout_height="wrap_content"
         android:text="@string/show_answer_button" />
 
+    <TextView
+        android:id="@+id/version"
+        android:shadowColor="@color/white"
+        android:shadowDx="10"
+        android:shadowDy="5"
+        android:shadowRadius="4"
+        android:textSize="26dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="24dp"
+        tools:text="API Android version" />
+
 </LinearLayout>

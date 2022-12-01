@@ -2,7 +2,7 @@ package com.example.geoquiz
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -19,13 +19,15 @@ class QuizActivity : AppCompatActivity() {
         private const val KEY_POINTS = "questionsPoints"
         private const val KEY_ANSWER_IS_SHOWN = "answerIsShown"
         private const val KEY_FLAGS_ARRAY_SHOWED_QUESTION = "flagsArrayShowedQuestions"
+        private const val KEY_HINTS_COUNT = "hintsCount"
         private const val REQUEST_CODE_CHEAT = 0
+        private const val HINTS_COUNT = 3
         private val mQuestionBank = arrayOf(
-//            Question(R.string.question_australia, true),
-//            Question(R.string.question_oceans, true),
-//            Question(R.string.question_mideast, false),
-//            Question(R.string.question_africa, false),
-//            Question(R.string.question_americas, true),
+            Question(R.string.question_australia, true),
+            Question(R.string.question_oceans, true),
+            Question(R.string.question_mideast, false),
+            Question(R.string.question_africa, false),
+            Question(R.string.question_americas, true),
             Question(R.string.question_asia, true),
             Question(R.string.question_uk, true),
             Question(R.string.question_russia, true)
@@ -33,6 +35,7 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private val mQuestionTextView: TextView by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.question_text_view) }
+    private val hintTextView: TextView by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.hints) }
     private val mTrueButton: Button by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.true_button) }
     private val mFalseButton: Button by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.false_button) }
     private val mCheatButton: Button by lazy(LazyThreadSafetyMode.NONE) { findViewById(R.id.cheat_button) }
@@ -41,13 +44,14 @@ class QuizActivity : AppCompatActivity() {
 
     private var mCurrentIndex = 0
     private var questionsPoints = 0
+    private var hints = HINTS_COUNT
     private var mIsCheater = false
     private var flagsArrayShowedQuestions = BooleanArray(mQuestionBank.size)
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        Log.i(TAG, "onSaveInstanceState")
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex)
         savedInstanceState.putInt(KEY_POINTS, questionsPoints)
+        savedInstanceState.putInt(KEY_HINTS_COUNT, hints)
         savedInstanceState.putBoolean(KEY_ANSWER_IS_SHOWN, mIsCheater)
         savedInstanceState.putBooleanArray(
             KEY_FLAGS_ARRAY_SHOWED_QUESTION,
@@ -63,12 +67,14 @@ class QuizActivity : AppCompatActivity() {
         savedInstanceState?.let {
             questionsPoints = savedInstanceState.getInt(KEY_POINTS)
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX)
+            hints = savedInstanceState.getInt(KEY_HINTS_COUNT)
             mIsCheater = savedInstanceState.getBoolean(KEY_ANSWER_IS_SHOWN)
             flagsArrayShowedQuestions =
                 savedInstanceState.getBooleanArray(KEY_FLAGS_ARRAY_SHOWED_QUESTION)!!
         }
 
         updateQuestion()
+        updateHint()
 
         mCheatButton.setOnClickListener {
             val answerIsTrue = mQuestionBank[mCurrentIndex].answerTrue
@@ -123,38 +129,24 @@ class QuizActivity : AppCompatActivity() {
                 return
             }
             mIsCheater = CheatActivity.wasAnswerShown(data)
+
+            if (hints > 0 && mIsCheater) {
+                hints--
+                updateHint()
+            }
+
             flagsArrayShowedQuestions[mCurrentIndex] = mIsCheater
         }
     }
 
-    /*    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart() called")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume() called")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause() called")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop() called")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy() called")
-    }*/
-
     private fun updateQuestion() {
         val question = mQuestionBank[mCurrentIndex]
         mQuestionTextView.setText(if (flagsArrayShowedQuestions[mCurrentIndex]) R.string.judgment_text else question.textResId)
+    }
+
+    private fun updateHint() {
+        if (hints <= 0) mCheatButton.visibility = View.INVISIBLE
+        hintTextView.text = "You have $hints/$HINTS_COUNT hints"
     }
 
     private fun checkAnswer(userPressedTrue: Boolean) {
