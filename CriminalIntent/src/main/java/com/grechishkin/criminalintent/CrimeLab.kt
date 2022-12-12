@@ -16,7 +16,7 @@ class CrimeLab private constructor(private val context: Context) {
         }
     }
 
-    fun getCrime(uuid: UUID): Crime? {
+    fun findCrimeByUUID(uuid: UUID): Crime? {
         return mCrimes.find { it.mId == uuid }
     }
 
@@ -25,7 +25,7 @@ class CrimeLab private constructor(private val context: Context) {
         private var INSTANCE: CrimeLab? = null
 
         @Synchronized
-        fun get(context: Context): CrimeLab = INSTANCE ?: CrimeLab(context).also { INSTANCE = it }
-
+        fun getInstance(context: Context): CrimeLab =
+            INSTANCE ?: CrimeLab(context).also { INSTANCE = it }
     }
 }
