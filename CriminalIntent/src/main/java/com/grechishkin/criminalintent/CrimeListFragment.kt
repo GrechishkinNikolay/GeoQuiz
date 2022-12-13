@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +26,6 @@ class CrimeListFragment : Fragment() {
         mCrimeRecyclerView.layoutManager = LinearLayoutManager(this.activity)
 
         updateUI()
-
         return view
     }
 
@@ -38,8 +39,26 @@ class CrimeListFragment : Fragment() {
     private class CrimeHolder(
         inflater: LayoutInflater,
         parent: ViewGroup?
-    ) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item_crime, parent, false))
+    ) : RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item_crime, parent, false)) {
+
+        private val mTitleTextView: TextView =
+            itemView.findViewById<View>(R.id.crime_title) as TextView
+        private val mDateTextView: TextView =
+            itemView.findViewById<View>(R.id.crime_date) as TextView
+        private lateinit var mCrime: Crime
+
+        init {
+            itemView.setOnClickListener {
+                Toast.makeText(it?.context, "${mCrime.mTitle} clicked!", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        fun bind(crime: Crime) {
+            mCrime = crime
+            mTitleTextView.text = mCrime.mTitle
+            mDateTextView.text = mCrime.mDate.toString()
+        }
+    }
 
     private class CrimeAdapter(private val mCrimes: MutableList<Crime>) :
         RecyclerView.Adapter<CrimeHolder>() {
@@ -49,8 +68,10 @@ class CrimeListFragment : Fragment() {
             return CrimeHolder(layoutInflater, parent)
         }
 
-        override fun getItemCount() = mCrimes.size
+        override fun onBindViewHolder(holder: CrimeHolder, position: Int) {
+            holder.bind(mCrimes[position])
+        }
 
-        override fun onBindViewHolder(holder: CrimeHolder, position: Int) {}
+        override fun getItemCount() = mCrimes.size
     }
 }
