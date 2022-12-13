@@ -8,6 +8,7 @@ class Crime {
     var mTitle: String? = null
     var mDate: Date? = null
     var mSolved = false
+    var mRequiresPolice = false
 
     init {
         mId = UUID.randomUUID()

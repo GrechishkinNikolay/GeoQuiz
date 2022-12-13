@@ -30,16 +30,17 @@ class CrimeListFragment : Fragment() {
     }
 
     private fun updateUI() {
-        val crimeLab = CrimeLab.getInstance(requireContext())
-        val crimes = crimeLab.mCrimes
+        val crimeSingletonStorage = CrimeSingletonStorage.getInstance(requireContext())
+        val crimes = crimeSingletonStorage.mCrimes
         mAdapter = CrimeAdapter(crimes)
         mCrimeRecyclerView.adapter = mAdapter
     }
 
     private class CrimeHolder(
         inflater: LayoutInflater,
-        parent: ViewGroup?
-    ) : RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item_crime, parent, false)) {
+        parent: ViewGroup?,
+        resource: Int
+    ) : RecyclerView.ViewHolder(inflater.inflate(resource, parent, false)) {
 
         private val mTitleTextView: TextView =
             itemView.findViewById<View>(R.id.crime_title) as TextView
@@ -65,11 +66,19 @@ class CrimeListFragment : Fragment() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            return CrimeHolder(layoutInflater, parent)
+            return when (viewType) {
+                0 -> CrimeHolder(layoutInflater, parent, R.layout.list_item_crime)
+                1 -> CrimeHolder(layoutInflater, parent, R.layout.list_item_serious_crime)
+                else -> CrimeHolder(layoutInflater, parent, R.layout.list_item_crime)
+            }
         }
 
         override fun onBindViewHolder(holder: CrimeHolder, position: Int) {
             holder.bind(mCrimes[position])
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return if (mCrimes[position].mRequiresPolice) 1 else 0
         }
 
         override fun getItemCount() = mCrimes.size

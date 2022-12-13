@@ -3,7 +3,7 @@ package com.grechishkin.criminalintent
 import android.content.Context
 import java.util.*
 
-class CrimeLab private constructor(private val context: Context) {
+class CrimeSingletonStorage private constructor(private val context: Context) {
 
     val mCrimes: MutableList<Crime> = mutableListOf()
 
@@ -12,6 +12,7 @@ class CrimeLab private constructor(private val context: Context) {
             val crime = Crime()
             crime.mTitle = "Crime #$i"
             crime.mSolved = i % 2 == 0 // Для каждого второго объекта
+            crime.mRequiresPolice = Math.random() < 0.4 // Для случайного объекта
             mCrimes += crime
         }
     }
@@ -22,10 +23,10 @@ class CrimeLab private constructor(private val context: Context) {
 
     companion object {
         @Volatile
-        private var INSTANCE: CrimeLab? = null
+        private var INSTANCE: CrimeSingletonStorage? = null
 
         @Synchronized
-        fun getInstance(context: Context): CrimeLab =
-            INSTANCE ?: CrimeLab(context).also { INSTANCE = it }
+        fun getInstance(context: Context): CrimeSingletonStorage =
+            INSTANCE ?: CrimeSingletonStorage(context).also { INSTANCE = it }
     }
 }
