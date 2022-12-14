@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -42,10 +43,9 @@ class CrimeListFragment : Fragment() {
         resource: Int
     ) : RecyclerView.ViewHolder(inflater.inflate(resource, parent, false)) {
 
-        private val mTitleTextView: TextView =
-            itemView.findViewById<View>(R.id.crime_title) as TextView
-        private val mDateTextView: TextView =
-            itemView.findViewById<View>(R.id.crime_date) as TextView
+        private val mTitleTextView = itemView.findViewById<TextView>(R.id.crime_title)
+        private val mDateTextView = itemView.findViewById<TextView>(R.id.crime_date)
+        private val mSolvedImageView = itemView.findViewById<ImageView>(R.id.crime_solved)
         private lateinit var mCrime: Crime
 
         init {
@@ -58,6 +58,7 @@ class CrimeListFragment : Fragment() {
             mCrime = crime
             mTitleTextView.text = mCrime.mTitle
             mDateTextView.text = mCrime.mDate.toString()
+            mSolvedImageView.visibility = if (crime.mSolved) View.VISIBLE else View.GONE
         }
     }
 

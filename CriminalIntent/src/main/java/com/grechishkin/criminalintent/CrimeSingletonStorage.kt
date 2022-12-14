@@ -11,8 +11,8 @@ class CrimeSingletonStorage private constructor(private val context: Context) {
         for (i in 0..99) {
             val crime = Crime()
             crime.mTitle = "Crime #$i"
-            crime.mSolved = i % 2 == 0 // Для каждого второго объекта
-            crime.mRequiresPolice = Math.random() < 0.4 // Для случайного объекта
+            crime.mSolved = Math.random() < 0.5
+            crime.mRequiresPolice = Math.random() < 0.4
             mCrimes += crime
         }
     }
