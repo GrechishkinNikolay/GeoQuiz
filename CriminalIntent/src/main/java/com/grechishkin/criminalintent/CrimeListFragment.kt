@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
+
 
 class CrimeListFragment : Fragment() {
 
@@ -32,8 +32,8 @@ class CrimeListFragment : Fragment() {
     }
 
     private fun updateUI() {
-        val crimeSingletonStorage = CrimeSingletonStorage.getInstance(requireContext())
-        val crimes = crimeSingletonStorage.mCrimes
+        val crimeStorage = CrimeStorage.getInstance(requireContext())
+        val crimes = crimeStorage.mCrimes
         mAdapter = CrimeAdapter(crimes)
         mCrimeRecyclerView.adapter = mAdapter
     }
@@ -51,7 +51,8 @@ class CrimeListFragment : Fragment() {
 
         init {
             itemView.setOnClickListener {
-                Toast.makeText(it?.context, "${mCrime.mTitle} clicked!", Toast.LENGTH_LONG).show()
+                val intent = CrimeActivity.newIntent(itemView.context, mCrime.mId)
+                itemView.context.startActivity(intent)
             }
         }
 

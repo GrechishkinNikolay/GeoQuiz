@@ -3,7 +3,7 @@ package com.grechishkin.criminalintent
 import android.content.Context
 import java.util.*
 
-class CrimeSingletonStorage private constructor(private val context: Context) {
+class CrimeStorage private constructor(private val context: Context) {
 
     val mCrimes: MutableList<Crime> = mutableListOf()
 
@@ -17,16 +17,16 @@ class CrimeSingletonStorage private constructor(private val context: Context) {
         }
     }
 
-    fun findCrimeByUUID(uuid: UUID): Crime? {
+    fun findCrimeByUUID(uuid: UUID?): Crime? {
         return mCrimes.find { it.mId == uuid }
     }
 
     companion object {
         @Volatile
-        private var INSTANCE: CrimeSingletonStorage? = null
+        private var INSTANCE: CrimeStorage? = null
 
         @Synchronized
-        fun getInstance(context: Context): CrimeSingletonStorage =
-            INSTANCE ?: CrimeSingletonStorage(context).also { INSTANCE = it }
+        fun getInstance(context: Context): CrimeStorage =
+            INSTANCE ?: CrimeStorage(context).also { INSTANCE = it }
     }
 }
