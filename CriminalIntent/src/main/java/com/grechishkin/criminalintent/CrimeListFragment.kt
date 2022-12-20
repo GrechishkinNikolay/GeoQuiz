@@ -27,15 +27,24 @@ class CrimeListFragment : Fragment() {
         mCrimeRecyclerView = view.findViewById(R.id.crime_recycler_view)
         mCrimeRecyclerView.layoutManager = LinearLayoutManager(this.activity)
 
-        updateUI()
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateUI()
     }
 
     private fun updateUI() {
         val crimeStorage = CrimeStorage.getInstance(requireContext())
         val crimes = crimeStorage.mCrimes
-        mAdapter = CrimeAdapter(crimes)
-        mCrimeRecyclerView.adapter = mAdapter
+        if (::mAdapter.isInitialized) {
+            mAdapter.notifyDataSetChanged()
+//            mAdapter.notifyItemChanged(?)
+        } else {
+            mAdapter = CrimeAdapter(crimes)
+            mCrimeRecyclerView.adapter = mAdapter
+        }
     }
 
     private class CrimeHolder(
