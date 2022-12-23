@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.grechishkin.criminalintent.CrimeListFragment.CrimeHolder.Companion.lastClickedCrimeAdapterPosition
 import java.text.SimpleDateFormat
 
 
@@ -36,12 +37,16 @@ class CrimeListFragment : Fragment() {
     }
 
     private fun updateUI() {
-        val crimeStorage = CrimeStorage.getInstance(requireContext())
-        val crimes = crimeStorage.mCrimes
         if (::mAdapter.isInitialized) {
-            mAdapter.notifyDataSetChanged()
-//            mAdapter.notifyItemChanged(?)
+            if (lastClickedCrimeAdapterPosition >= 0) {
+                mAdapter.notifyItemChanged(lastClickedCrimeAdapterPosition)
+                lastClickedCrimeAdapterPosition = -1
+            } else {
+                mAdapter.notifyDataSetChanged()
+            }
         } else {
+            val crimeStorage = CrimeStorage.getInstance(requireContext())
+            val crimes = crimeStorage.mCrimes
             mAdapter = CrimeAdapter(crimes)
             mCrimeRecyclerView.adapter = mAdapter
         }
@@ -58,8 +63,14 @@ class CrimeListFragment : Fragment() {
         private val mSolvedImageView = itemView.findViewById<ImageView>(R.id.crime_solved)
         private lateinit var mCrime: Crime
 
+        companion object {
+            var lastClickedCrimeAdapterPosition: Int = -1
+        }
+
+
         init {
             itemView.setOnClickListener {
+                lastClickedCrimeAdapterPosition = bindingAdapterPosition
                 val intent = CrimeActivity.newIntent(itemView.context, mCrime.mId)
                 itemView.context.startActivity(intent)
             }

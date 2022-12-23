@@ -16,9 +16,8 @@ class CrimeActivity : SingleFragmentActivity() {
         }
     }
 
-    override fun createFragment() = CrimeFragment.newInstance(
-        intent.getSerializableExtra(
-            EXTRA_CRIME_ID
-        ) as UUID
-    )
+    override fun createFragment() = CrimeFragment
+        .newInstance(
+            intent.getSerializableExtra(EXTRA_CRIME_ID) as UUID
+        )
 }
