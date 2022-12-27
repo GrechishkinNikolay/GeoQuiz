@@ -5,7 +5,7 @@ import java.util.*
 
 class CrimeStorage private constructor(private val context: Context) {
 
-    val mCrimes: MutableList<Crime> = mutableListOf()
+    var mCrimes: MutableList<Crime> = mutableListOf()
 
     init {
         for (i in 0..99) {
@@ -15,10 +15,13 @@ class CrimeStorage private constructor(private val context: Context) {
             crime.mRequiresPolice = Math.random() < 0.4
             mCrimes += crime
         }
+
+        mCrimes = mCrimes.sortedBy { it.mId } as MutableList<Crime>
+        val r = 1 + 1
     }
 
     fun findCrimeByUUID(uuid: UUID?): Crime? {
-        return mCrimes.find { it.mId == uuid }
+        return mCrimes[mCrimes.binarySearchBy(uuid) { it.mId }]
     }
 
     companion object {
