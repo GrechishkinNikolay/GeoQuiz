@@ -17,10 +17,9 @@ class CrimeStorage private constructor(private val context: Context) {
         }
 
         mCrimes = mCrimes.sortedBy { it.mId } as MutableList<Crime>
-        val r = 1 + 1
     }
 
-    fun findCrimeByUUID(uuid: UUID?): Crime? {
+    fun findCrimeByUUID(uuid: UUID?): Crime {
         return mCrimes[mCrimes.binarySearchBy(uuid) { it.mId }]
     }
 
