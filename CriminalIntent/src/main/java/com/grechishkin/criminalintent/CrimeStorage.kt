@@ -10,7 +10,7 @@ class CrimeStorage private constructor(private val context: Context) {
     init {
         for (i in 0..99) {
             val crime = Crime()
-            crime.mTitle = "Crime #$i"
+            crime.mTitle = "Crime  #$i"
             crime.mSolved = Math.random() < 0.5
             crime.mRequiresPolice = Math.random() < 0.4
             mCrimes += crime
