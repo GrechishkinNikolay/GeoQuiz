@@ -12,12 +12,12 @@ abstract class SingleFragmentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fragment)
 
-        val fm = supportFragmentManager
-        var fragment = fm.findFragmentById(R.id.frame_layout_fragment_container)
+        val fragmentManager = supportFragmentManager
+        var fragment = fragmentManager.findFragmentById(R.id.frame_layout_fragment_container)
 
         if (fragment == null) {
             fragment = createFragment()
-            fm.beginTransaction()
+            fragmentManager.beginTransaction()
                 .add(R.id.frame_layout_fragment_container, fragment)
                 .commit()
         }

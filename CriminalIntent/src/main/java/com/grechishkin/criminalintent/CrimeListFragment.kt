@@ -71,7 +71,7 @@ class CrimeListFragment : Fragment() {
         init {
             itemView.setOnClickListener {
                 lastClickedCrimeAdapterPosition = bindingAdapterPosition
-                val intent = CrimeActivity.newIntent(itemView.context, mCrime.mId)
+                val intent = CrimePagerActivity.newIntent(itemView.context, mCrime.mId)
                 itemView.context.startActivity(intent)
             }
         }

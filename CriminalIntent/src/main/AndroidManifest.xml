@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GeoQuiz">
         <activity
-            android:name=".CrimeActivity"
+            android:name=".CrimePagerActivity"
             android:exported="false">
 
             <meta-data
