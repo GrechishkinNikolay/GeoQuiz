@@ -42,7 +42,7 @@ class CrimePagerActivity : AppCompatActivity() {
         ) {
             override fun getItem(position: Int): Fragment {
                 val crime: Crime = crimes[position]
-                return CrimeFragment.newInstance(crime.mId)
+                return CrimeFragment.newInstance(crime.mId, viewPager)
             }
 
             override fun getCount(): Int {
