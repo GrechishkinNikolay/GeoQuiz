@@ -18,6 +18,7 @@ class CrimeFragment : Fragment() {
 
     companion object {
         private const val ARG_CRIME_ID = "crime_id"
+        private const val DIALOG_DATE = "DialogDate"
         private lateinit var viewPager: ViewPager
         private lateinit var crimeStorage: CrimeStorage
 
@@ -88,7 +89,10 @@ class CrimeFragment : Fragment() {
 
 
         mDateButton.text = crime?.mDate.toString()
-        mDateButton.isEnabled = false
+        mDateButton.setOnClickListener {
+            val datePickerFragment = DatePickerFragment()
+            datePickerFragment.show(parentFragmentManager, DIALOG_DATE)
+        }
 
         return v
     }
