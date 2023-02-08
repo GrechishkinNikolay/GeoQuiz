@@ -1,4 +1,4 @@
-package com.grechishkin.criminalintent
+package com.grechishkin.criminalintent.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.grechishkin.criminalintent.CrimeListFragment.CrimeHolder.Companion.lastClickedCrimeAdapterPosition
+import com.grechishkin.criminalintent.Crime
+import com.grechishkin.criminalintent.CrimeStorage
+import com.grechishkin.criminalintent.R
+import com.grechishkin.criminalintent.activities.CrimePagerActivity
+import com.grechishkin.criminalintent.fragments.CrimeListFragment.CrimeHolder.Companion.lastClickedCrimeAdapterPosition
 import java.text.SimpleDateFormat
 
 

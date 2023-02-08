@@ -30,6 +30,13 @@
         android:layout_height="wrap_content"
         tools:ignore="SpeakableTextPresentCheck" />
 
+    <Button
+        android:id="@+id/crime_time"
+        android:text="Change time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="SpeakableTextPresentCheck" />
+
     <CheckBox
         android:id="@+id/crime_solved"
         android:layout_width="match_parent"

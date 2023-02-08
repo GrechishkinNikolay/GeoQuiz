@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GeoQuiz">
         <activity
-            android:name=".CrimePagerActivity"
+            android:name=".activities.CrimePagerActivity"
             android:exported="false">
 
             <meta-data
@@ -17,7 +17,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".CrimeListActivity"
+            android:name=".activities.CrimeListActivity"
             android:exported="true">
 
             <intent-filter>

@@ -1,4 +1,4 @@
-package com.grechishkin.criminalintent
+package com.grechishkin.criminalintent.activities
 
 import android.content.Context
 import android.content.Intent
@@ -7,6 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.grechishkin.criminalintent.Crime
+import com.grechishkin.criminalintent.CrimeStorage
+import com.grechishkin.criminalintent.R
+import com.grechishkin.criminalintent.fragments.CrimeFragment
 import java.util.*
 
 class CrimePagerActivity : AppCompatActivity() {

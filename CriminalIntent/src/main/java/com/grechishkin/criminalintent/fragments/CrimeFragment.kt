@@ -1,5 +1,7 @@
-package com.grechishkin.criminalintent
+package com.grechishkin.criminalintent.fragments
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +13,9 @@ import android.widget.CheckBox
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+import com.grechishkin.criminalintent.Crime
+import com.grechishkin.criminalintent.CrimeStorage
+import com.grechishkin.criminalintent.R
 import java.util.*
 
 
@@ -19,6 +24,8 @@ class CrimeFragment : Fragment() {
     companion object {
         private const val ARG_CRIME_ID = "crime_id"
         private const val DIALOG_DATE = "DialogDate"
+        private const val REQUEST_CODE_CHANGE_DATE = 0
+        private const val REQUEST_CODE_CHANGE_TIME = 1
         private lateinit var viewPager: ViewPager
         private lateinit var crimeStorage: CrimeStorage
 
@@ -35,6 +42,7 @@ class CrimeFragment : Fragment() {
     private var crime: Crime? = null
     private lateinit var mTitleField: EditText
     private lateinit var mDateButton: Button
+    private lateinit var mTimeButton: Button
     private lateinit var mFirstCrimeButton: Button
     private lateinit var mLastCrimeButton: Button
     private lateinit var mSolvedCheckBox: CheckBox
@@ -55,6 +63,7 @@ class CrimeFragment : Fragment() {
         mTitleField = v.findViewById(R.id.crime_title)
         mTitleField.setText(crime?.mTitle)
         mDateButton = v.findViewById(R.id.crime_date)
+        mTimeButton = v.findViewById(R.id.crime_time)
         mFirstCrimeButton = v.findViewById(R.id.first_crime)
         mLastCrimeButton = v.findViewById(R.id.last_crime)
         mSolvedCheckBox = v.findViewById(R.id.crime_solved)
@@ -87,13 +96,38 @@ class CrimeFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        updateDate()
 
-        mDateButton.text = crime?.mDate.toString()
         mDateButton.setOnClickListener {
-            val datePickerFragment = DatePickerFragment()
+            val datePickerFragment = DatePickerFragment.newInstance(crime?.mDate)
+            datePickerFragment.setTargetFragment(this@CrimeFragment, REQUEST_CODE_CHANGE_DATE)
             datePickerFragment.show(parentFragmentManager, DIALOG_DATE)
         }
 
+        mTimeButton.setOnClickListener {
+            val timePickerFragment = TimePickerFragment.newInstance(crime?.mDate)
+            timePickerFragment.setTargetFragment(this@CrimeFragment, REQUEST_CODE_CHANGE_TIME)
+            timePickerFragment.show(parentFragmentManager, DIALOG_DATE)
+        }
+
         return v
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK) return
+        if (requestCode == REQUEST_CODE_CHANGE_DATE) {
+            val date = data?.getSerializableExtra(DatePickerFragment.EXTRA_DATE) as Date
+            crime?.mDate = date
+            updateDate()
+        }
+        if (requestCode == REQUEST_CODE_CHANGE_TIME) {
+            val date = data?.getSerializableExtra(TimePickerFragment.EXTRA_TIME) as Date
+            crime?.mDate = date
+            updateDate()
+        }
+    }
+
+    private fun updateDate() {
+        mDateButton.text = crime?.mDate.toString()
     }
 }

@@ -1,8 +1,9 @@
-package com.grechishkin.criminalintent
+package com.grechishkin.criminalintent.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.grechishkin.criminalintent.R
 
 abstract class SingleFragmentActivity : AppCompatActivity() {
 
